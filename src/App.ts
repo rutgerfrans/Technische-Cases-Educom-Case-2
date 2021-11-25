@@ -23,8 +23,10 @@ const UpdateData = async () =>{
     let data = await response.json();
     // Create Array of station objects
     let weatherstations = data.actual.stationmeasurements.map((station: any) =>{
+        const date = station.timestamp.split("T");
         return new weatherstation({
             stationname: station.stationname,
+            date: date[0],        
             weatherdescription: station.weatherdescription,
             temperature: station.temperature,
             feeltemperature: station.feeltemperature,
@@ -35,11 +37,12 @@ const UpdateData = async () =>{
         })
     });
 
-    // Update every station in client
+    // Update every station in client if date not the same
     weatherstations.forEach(async (station: any) => {
-        await client.db.collection("weatherstations").findOneAndUpdate({stationname: station.stationname}, 
+        await client.db.collection("weatherstations").findOneAndUpdate({date: station.date, stationname: station.stationname}, 
             {$set :{stationname: station.stationname,
                 weatherdescription: station.weatherdescription,
+                date: station.date,
                 temperature: station.temperature,
                 feeltemperature: station.feeltemperature,
                 groundtemperature: station.groundtemperature,
@@ -49,82 +52,6 @@ const UpdateData = async () =>{
             {upsert: true});
     });
 }
-
-// const UpdateData = () =>{
-//     db.then(async res =>{
-//         console.log(res.connection.collection("users"))
-        // let response = await fetch('https://data.buienradar.nl/2.0/feed/json');
-        // let data = await response.json();
-
-        // // Create Array of station objects
-        // let weatherstations = data.actual.stationmeasurements.map((station: any) =>{
-        //     return new weatherstation({
-        //         stationname: station.stationname,
-        //         weatherdescription: station.weatherdescription,
-        //         temperature: station.temperature,
-        //         feeltemperature: station.feeltemperature,
-        //         groundtemperature: station.groundtemperature,
-        //         humidity: station.humidity,
-        //         rainFallLast24Hour: station.rainFallLast24Hour,
-        //         rainFallLastHour: station.rainFallLastHour
-        //     })
-        // });
-
-        // // Update every station in client
-        // weatherstations.forEach(async (station: any) => {
-        //     await res.db().collection("weatherstations").findOneAndUpdate({stationname: station.stationname}, 
-        //         {$set :{stationname: station.stationname,
-        //             weatherdescription: station.weatherdescription,
-        //             temperature: station.temperature,
-        //             feeltemperature: station.feeltemperature,
-        //             groundtemperature: station.groundtemperature,
-        //             humidity: station.humidity,
-        //             rainFallLast24Hour: station.rainFallLast24Hour,
-        //             rainFallLastHour: station.rainFallLastHour}}, 
-        //         {upsert: true});
-        // });
-//     });
-// }
-
-// // Create client
-// export const client = MongoClient.connect("mongodb+srv://rutger:"+process.env.DB_PASSWORD+"@cluster0.yh4da.mongodb.net/myFirstDatabase?retryWrites=true&w=majority");
-
-// // Retrieves data from Buienradar and writes/updates it to the client
-// const UpdateData = () =>{ 
-//     client.then(async res =>{
-//         // Retrieve data from Buienradar
-//         let response = await fetch('https://data.buienradar.nl/2.0/feed/json');
-//         let data = await response.json();
-
-//         // Create Array of station objects
-//         let weatherstations = data.actual.stationmeasurements.map((station: any) =>{
-//             return new weatherstation({
-//                 stationname: station.stationname,
-//                 weatherdescription: station.weatherdescription,
-//                 temperature: station.temperature,
-//                 feeltemperature: station.feeltemperature,
-//                 groundtemperature: station.groundtemperature,
-//                 humidity: station.humidity,
-//                 rainFallLast24Hour: station.rainFallLast24Hour,
-//                 rainFallLastHour: station.rainFallLastHour
-//             })
-//         });
-
-//         // Update every station in client
-//         weatherstations.forEach(async (station: any) => {
-//             await res.db().collection("weatherstations").findOneAndUpdate({stationname: station.stationname}, 
-//                 {$set :{stationname: station.stationname,
-//                     weatherdescription: station.weatherdescription,
-//                     temperature: station.temperature,
-//                     feeltemperature: station.feeltemperature,
-//                     groundtemperature: station.groundtemperature,
-//                     humidity: station.humidity,
-//                     rainFallLast24Hour: station.rainFallLast24Hour,
-//                     rainFallLastHour: station.rainFallLastHour}}, 
-//                 {upsert: true});
-//         });
-//     })
-// }
 
 // Set interval
 setInterval(() => {
