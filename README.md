@@ -20,7 +20,7 @@ git clone https://github.com/rutgerfrans/Technische-Cases-Educom-Case-2.git
 npm install
 ```
 
-**3. Connect MongoDB**
+**3. Connect MongoDB**  
 Vervang onderstaande connection string met uw eigen connection string en voeg het wachtwoord toe via een .env file of schrijf het mee in de connection string.
 Omdat de collectie in het begin leeg zal zijn, raad ik het aan om het interval in de config even aan te passen naar 5000 ms. Zodoende kan er eerder data gepopulate worden. 
 ```js
