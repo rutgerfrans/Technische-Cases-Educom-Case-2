@@ -1,6 +1,5 @@
 // Packages
 import express from "express";
-// import {MongoClient} from "mongodb";
 import mongoose from "mongoose";
 import fetch from "cross-fetch";
 import weatherstationroute from "./routes/weatherstations";
@@ -21,6 +20,7 @@ const client = mongoose.connection;
 const UpdateData = async () =>{
     let response = await fetch('https://data.buienradar.nl/2.0/feed/json');
     let data = await response.json();
+
     // Create Array of station objects
     let weatherstations = data.actual.stationmeasurements.map((station: any) =>{
         const date = station.timestamp.split("T");
@@ -37,7 +37,7 @@ const UpdateData = async () =>{
         })
     });
 
-    // Update every station in client if date not the same
+    // Update every station in client if day date not the same
     weatherstations.forEach(async (station: any) => {
         await client.db.collection("weatherstations").findOneAndUpdate({date: station.date, stationname: station.stationname}, 
             {$set :{stationname: station.stationname,
@@ -60,7 +60,7 @@ setInterval(() => {
     config.SetInterval
 );
 
-// Opstarten server
+// Start server
 app.listen({port: 4001}, ()=> {
     console.log('server running')
 })
