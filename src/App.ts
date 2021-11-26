@@ -35,7 +35,7 @@ const UpdateData = async () =>{
             rainFallLast24Hour: station.rainFallLast24Hour,
             rainFallLastHour: station.rainFallLastHour
         })
-    });
+    }); 
 
     // Update every station in client if day date not the same
     weatherstations.forEach(async (station: any) => {
@@ -51,12 +51,12 @@ const UpdateData = async () =>{
                 rainFallLastHour: station.rainFallLastHour}}, 
             {upsert: true});
     });
+    console.log("Data updated")
 }
 
 // Set interval
 setInterval(() => {
-    UpdateData();
-    console.log("Data updated")},
+    UpdateData();},
     config.SetInterval
 );
 
